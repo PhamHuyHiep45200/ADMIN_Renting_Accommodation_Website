@@ -2,19 +2,19 @@ import LayoutLogin from "@/components/layouts/LayoutLogin";
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import { loginUser } from "@/service/auth";
 import { Button, Form, Input } from "antd";
+import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 
 function Login() {
   const { errorNoti, userAuth, user } = useContext(CreateContext);
   const router = useRouter();
-  const redirectRegister = (path) => {
-    router.push("/register");
-  };
   const submit = async (e) => {
     try {
       const {data} = await loginUser(e);
-      localStorage.setItem('token_admin', data.token)
+      localStorage.setItem('token_admin', data.accessToken)
+      localStorage.setItem('refresh_token_admin', data.refreshToken)
+      localStorage.setItem('expires_time', moment().add(data.expiresTime, 'seconds'))
       userAuth(true)
     } catch (error) {
       errorNoti('Đã có lỗi xảy ra');
@@ -28,15 +28,14 @@ function Login() {
   return (
     <div>
       <div className="my-5 font-[500] text-center text-[30px]">Login</div>
-      <Form onFinish={submit}>
+      <Form onFinish={submit} layout='vertical'>
         <Form.Item
-          name="email"
+          name="phone"
           rules={[
             { required: true, message: "Không được bỏ trống!" },
-            { type: "email", message: "Bắt buộc email" },
           ]}
         >
-          <Input size="large" placeholder="Email" className="round-[15px]" />
+          <Input size="large" placeholder="Phone" className="round-[15px]" />
         </Form.Item>
         <Form.Item
           name="password"
@@ -51,12 +50,6 @@ function Login() {
         >
           Đăng Nhập
         </Button>
-        <span
-          className="block text-right text-primary underline underline-offset-1 cursor-pointer font-medium"
-          onClick={redirectRegister}
-        >
-          Đăng kí tài khoản
-        </span>
       </Form>
     </div>
   );
