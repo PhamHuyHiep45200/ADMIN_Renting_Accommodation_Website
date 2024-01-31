@@ -42,11 +42,6 @@ function LayoutMain({ children }) {
       label: "Quản Lý Bài Đăng",
     },
     {
-      key: "/order",
-      icon: <UsergroupAddOutlined />,
-      label: "Đơn hàng",
-    },
-    {
       key: "/login",
       icon: <UsergroupAddOutlined />,
       label: "Đăng Xuất",

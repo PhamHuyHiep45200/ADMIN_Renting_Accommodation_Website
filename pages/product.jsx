@@ -1,4 +1,4 @@
-import ProductApprove from "@/components/post/ProductApprove";
+import ProductApprove from "@/components/post/ProductPending";
 import ProductApproved from "@/components/post/ProductApproved";
 import ProductCancle from "@/components/post/ProductCancle";
 import { Tabs, Tag } from "antd";
@@ -17,17 +17,17 @@ function Product() {
   const items = [
     {
       key: "1",
-      label: <Tag color="green">Tất Cả Sản Phẩm</Tag>,
+      label: <Tag color="green">Accept Post</Tag>,
       children: <ProductApproved checkCall={checkCall} resetData={resetData} />,
     },
     {
       key: "2",
-      label: <Tag color="blue">Sản Phẩm Đợi Duyệt</Tag>,
+      label: <Tag color="blue">Pendding Post</Tag>,
       children: <ProductApprove checkCall={checkCall} resetData={resetData} />,
     },
     {
       key: "3",
-      label: <Tag color="red">Sản Phẩm Huỷ Bỏ</Tag>,
+      label: <Tag color="red">Reject Post</Tag>,
       children: <ProductCancle checkCall={checkCall} />,
     },
   ];

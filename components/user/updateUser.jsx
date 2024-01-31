@@ -8,7 +8,7 @@ function UpdateUser({ open, refresh, closeAdd, data }) {
   const [form] = Form.useForm();
   const submit = async (e) => {
     try {
-      await updateUser(data.id, e);
+      await updateUser(data._id, e);
       refresh();
       onCloseAdd();
     } catch (error) {
@@ -22,47 +22,46 @@ function UpdateUser({ open, refresh, closeAdd, data }) {
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
-        name: data.name,
-        email: data.email,
+        username: data.username,
+        phone: data.phone,
         address: data.address,
-        role: data.roles?.[0]?.name === "admin" ? "ADMIN" : "USER",
+        role: data.role,
       });
     }
   }, [data]);
   return (
     <Modal
-      title="Sửa Người Dùng"
+      title="Update User"
       open={open}
       onCancel={onCloseAdd}
       footer={false}
     >
       <Form onFinish={submit} layout="vertical" form={form}>
         <Form.Item
-          label="Họ và tên"
-          name="name"
+          label="UserName"
+          name="username"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <Input size="large" />
         </Form.Item>
         <Form.Item
-          label="Email"
-          name="email"
+          label="Phone"
+          name="phone"
           rules={[
             { required: true, message: "Không được bỏ trống!" },
-            { type: "email", message: "Phải là email" },
           ]}
         >
           <Input size="large" />
         </Form.Item>
         <Form.Item
-          label="Địa chỉ"
+          label="Address"
           name="address"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
-          label="Quyền"
+          label="Role"
           name="role"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >

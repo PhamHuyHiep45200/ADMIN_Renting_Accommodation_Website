@@ -11,29 +11,31 @@ function Login() {
   const router = useRouter();
   const submit = async (e) => {
     try {
-      const {data} = await loginUser(e);
-      localStorage.setItem('token_admin', data.accessToken)
-      localStorage.setItem('refresh_token_admin', data.refreshToken)
-      localStorage.setItem('expires_time', moment().add(data.expiresTime, 'seconds'))
-      userAuth(true)
+      const { data } = await loginUser(e);
+      localStorage.setItem("token_admin", data.accessToken);
+      localStorage.setItem("refresh_token_admin", data.refreshToken);
+      localStorage.setItem(
+        "expires",
+        moment().add(data.expiresTime, "seconds")
+      );
+      userAuth(true);
     } catch (error) {
-      errorNoti('Đã có lỗi xảy ra');
+      errorNoti("Đã có lỗi xảy ra");
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
+    console.log(user)
     if (user) {
       router.push("/");
     }
-  },[user])
+  }, [user]);
   return (
     <div>
       <div className="my-5 font-[500] text-center text-[30px]">Login</div>
-      <Form onFinish={submit} layout='vertical'>
+      <Form onFinish={submit} layout="vertical">
         <Form.Item
           name="phone"
-          rules={[
-            { required: true, message: "Không được bỏ trống!" },
-          ]}
+          rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <Input size="large" placeholder="Phone" className="round-[15px]" />
         </Form.Item>

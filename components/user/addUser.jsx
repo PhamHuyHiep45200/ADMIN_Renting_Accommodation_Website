@@ -19,34 +19,33 @@ function AddUser({ open, refresh, closeAdd }) {
     form.resetFields();
   };
   return (
-    <Modal title="Tạo Người Dùng" open={open} onCancel={onCloseAdd} footer={false}>
+    <Modal title="Add User" open={open} onCancel={onCloseAdd} footer={false}>
       <Form onFinish={submit} layout="vertical" form={form}>
         <Form.Item
-          label="Họ và tên"
-          name="name"
+          label="User Name"
+          name="username"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <Input size="large" />
         </Form.Item>
         <Form.Item
-          label="Email"
-          name="email"
+          label="Phone"
+          name="phone"
           rules={[
             { required: true, message: "Không được bỏ trống!" },
-            { type: "email", message: "Phải là email" },
           ]}
         >
           <Input size="large" />
         </Form.Item>
         <Form.Item
-          label="Địa chỉ"
+          label="Address"
           name="address"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
-          label="Mật khẩu"
+          label="Pass"
           name="password"
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >

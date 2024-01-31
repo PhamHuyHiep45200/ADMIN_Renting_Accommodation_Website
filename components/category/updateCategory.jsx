@@ -8,7 +8,7 @@ function UpdateUser({ open, refresh, closeAdd, data }) {
   const [form] = Form.useForm();
   const submit = async (e) => {
     try {
-      await updateCategory(data.id, e);
+      await updateCategory(data._id, e);
       refresh();
       onCloseAdd();
     } catch (error) {
@@ -40,9 +40,6 @@ function UpdateUser({ open, refresh, closeAdd, data }) {
           rules={[{ required: true, message: "Không được bỏ trống!" }]}
         >
           <Input size="large" />
-        </Form.Item>
-        <Form.Item label="Ảnh" name="image">
-          <UploadFile />
         </Form.Item>
         <div>
           <Button htmlType="submit" className="w-full" size="large">

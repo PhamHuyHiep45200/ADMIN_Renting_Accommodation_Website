@@ -12,21 +12,17 @@ function Users() {
   const [dataUpdate, setDataUpdate] = useState(null);
   const [add, setAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    total: 0,
-    limit: 10,
-  });
+
   const columns = [
     {
       title: "Họ Và Tên",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "username",
+      key: "username",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
     },
     {
       title: "Địa Chỉ",
@@ -38,11 +34,7 @@ function Users() {
       key: "role",
       render: (e) => (
         <div className="flex items-center space-x-2">
-          {e.roles.map((r, i) => (
-            <Tag key={i} color={r.name === "admin" ? "red" : "blue"}>
-              {r.name === "admin" ? "ADMIN" : "USER"}
-            </Tag>
-          ))}
+          <Tag color={e.role === "ADMIN" ? "red" : "blue"}>{e.role}</Tag>
         </div>
       ),
     },
@@ -52,41 +44,42 @@ function Users() {
       render: (e) => (
         <div className="flex items-center space-x-[10px]">
           <div
-            className="px-[10px] py-[5px] rounded-sm bg-[green] border-[green] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
+            className="px-[10px] py-[5px] rounded-xl bg-[green] border-[green] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
             onClick={() => {
               setDataUpdate(e);
               setOpenUpdate(true);
             }}
           >
             <HighlightOutlined className="text-[green]" />
-            <span className="text-[green]">Chỉnh Sửa</span>
+            <span className="text-[green]">Update</span>
           </div>
-          <div
-            className="px-[10px] py-[5px] rounded-sm bg-[red] border-[red] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
-            onClick={() => handleDelete(e.id)}
-          >
-            <LockOutlined className="text-[red]" />
-            <span className="text-[red]">Xoá</span>
-          </div>
+          {!e.active ? (
+            <div
+              className="px-[10px] py-[5px] rounded-xl bg-[#ffae00] border-[#ffae00] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
+              onClick={() => handleDelete(e._id, true)}
+            >
+              <span className="text-[#ffae00]">Public</span>
+            </div>
+          ) : (
+            <div
+              className="px-[10px] py-[5px] rounded-xl bg-[red] border-[red] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
+              onClick={() => handleDelete(e._id, false)}
+            >
+              <span className="text-[red]">Private</span>
+            </div>
+          )}
         </div>
       ),
     },
   ];
   useEffect(() => {
     getAll();
-  }, [pagination.page]);
+  }, []);
   const getAll = async () => {
     setLoading(true);
     try {
-      const { users } = await getAllUser({
-        page: pagination.page,
-        limit: pagination.limit,
-      });
-      setData(users.data);
-      setPagination({
-        ...pagination,
-        total: users.total,
-      });
+      const { data } = await getAllUser();
+      setData(data.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -97,30 +90,24 @@ function Users() {
     setAdd(false);
     setOpenUpdate(false);
   };
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, active) => {
     try {
-      await deleteUser(id);
+      await deleteUser(id, active);
       getAll();
     } catch (error) {
       console.log(error);
     }
   };
-  const changePaginate = (e) => {
-    setPagination({
-      ...pagination,
-      page: e,
-    });
-  };
   return (
     <div>
       <div className="text-center text-[30px] font-bold text-[#333]">
-        Quản Lý Tài Khoản
+        Account Manager
       </div>
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <Button size="large" onClick={() => setAdd(true)}>
           Thêm người dùng
         </Button>
-      </div>
+      </div> */}
       <AddUser open={add} refresh={getAll} closeAdd={closeAdd} />
       <UpdateUser
         open={openUpdate}
@@ -128,20 +115,7 @@ function Users() {
         closeAdd={closeAdd}
         data={dataUpdate}
       />
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={loading}
-        pagination={false}
-      />
-      <div className="text-center mt-5">
-        <Pagination
-          current={pagination.page}
-          total={pagination.total}
-          pageSize={pagination.limit}
-          onChange={(e) => changePaginate(e)}
-        ></Pagination>
-      </div>
+      <Table columns={columns} dataSource={data} loading={loading} />
     </div>
   );
 }

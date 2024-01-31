@@ -48,8 +48,8 @@ function MyApp({ Component, pageProps }) {
   };
   const getMe = async () => {
     try {
-      const { user } = await userGetMe();
-      setUser(user);
+      const { data } = await userGetMe();
+      setUser(data);
     } catch (error) {
       console.log(error);
     }

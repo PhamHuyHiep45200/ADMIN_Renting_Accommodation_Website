@@ -6,3 +6,10 @@ export async function loginUser(data) {
     data
   });
 }
+
+export async function refreshTokenApi(data) {
+  return request(`/auth/refresh`, {
+    method: "POST",
+    data
+  });
+}

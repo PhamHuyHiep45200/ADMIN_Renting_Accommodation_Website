@@ -1,20 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getAllProduct, updateMultiProduct } from "@/service/product";
+import {
+  getAllProduct,
+  updateMultiProduct,
+  updateStatusProduct,
+} from "@/service/product";
 import { formatMoney } from "@/utils/common";
 import { Button, Image, Pagination, Table } from "antd";
 import { useRouter } from "next/router";
 import { PRODUCT_STATUS } from "@/enum/product.enum";
 
-function ProductApprove({checkCall,resetData}) {
+function ProductPending({ checkCall, resetData }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const router = useRouter();
-  const [pagination, setPagination] = useState({
-    page: 1,
-    total: 0,
-    limit: 10,
-  });
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -27,35 +25,30 @@ function ProductApprove({checkCall,resetData}) {
 
   const changeStatusProducts = async (status) => {
     try {
-      await updateMultiProduct({
+      await updateStatusProduct({
         status,
-        products: selectedRowKeys,
+        listId: selectedRowKeys,
       });
-      getAllProductAprove();
-      resetData()
+      getAllProductPendding();
+      resetData();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getAllProductAprove = async () => {
+  const getAllProductPendding = async () => {
     setLoading(true);
     try {
-      const { products } = await getAllProduct({
-        status: 0,
-        page: pagination.page,
-        limit: pagination.limit,
+      const { data } = await getAllProduct({
+        status: "PENDING",
       });
-      setData(
-        products.data.map((e) => ({
+      const product = [
+        ...data.data.map((e) => ({
           ...e,
-          key: e.id,
-        }))
-      );
-      setPagination({
-        ...pagination,
-        total: products.total,
-      });
+          key: e._id,
+        })),
+      ];
+      setData([...product]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,54 +56,47 @@ function ProductApprove({checkCall,resetData}) {
     }
   };
   useEffect(() => {
-    getAllProductAprove();
-  }, [pagination.page, checkCall]);
+    getAllProductPendding();
+  }, [checkCall]);
   const columns = useMemo(() => {
     return [
       {
-        title: "Sản Phẩm",
+        title: "House",
         render: (_, record) => (
           <div className="flex items-center space-x-4">
             <Image
-              src={record.image_master}
+              src={record?.imgs[0]}
               alt=""
               className="max-w-[100px] min-w-[100px] min-h-[100px] max-h-[100px] rounded-[6px]"
             />
-            <div className="max-w-[200px]">{record?.name}</div>
+            <div className="max-w-[200px]">{record?.title}</div>
             <div>
               <span className="block text-[12px] text-[#999] italic">
                 Thể Loại
               </span>
-              <span>{record?.category?.name}</span>
             </div>
           </div>
         ),
       },
       {
-        title: "Đơn Giá",
-        render: (_, record) => <span>{formatMoney(record.price)} đ</span>,
+        title: "Category",
+        render: (_, record) => <span>{record.category.name}</span>,
       },
       {
-        title: "Số Lượng",
+        title: "type",
         align: "center",
-        dataIndex: "quantity",
+        render: (_, record) => <span>{record.type} đ</span>,
       },
       {
-        title: "Tổng Tiền",
+        title: "Money",
         render: (_, record) => (
           <span className="text-[red] font-semibold">
-            {formatMoney(record.price * record.quantity)} đ
+            {formatMoney(record.money)} đ
           </span>
         ),
       },
     ];
-  }, []);
-  const changePaginate = (e) => {
-    setPagination({
-      ...pagination,
-      page: e,
-    });
-  };
+  }, [data]);
   return (
     <div>
       <div className="flex justify-end space-x-4 items-center mb-5">
@@ -129,18 +115,10 @@ function ProductApprove({checkCall,resetData}) {
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data}
-        pagination={false}
+        loading={loading}
       />
-      <div className="text-center mt-5">
-        <Pagination
-          current={pagination.page}
-          total={pagination.total}
-          pageSize={pagination.limit}
-          onChange={(e) => changePaginate(e)}
-        ></Pagination>
-      </div>
     </div>
   );
 }
 
-export default ProductApprove;
+export default ProductPending;

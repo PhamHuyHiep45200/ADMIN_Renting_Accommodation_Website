@@ -29,13 +29,6 @@ function AddUser({ open, refresh, closeAdd }) {
         >
           <Input size="large" />
         </Form.Item>
-        <Form.Item
-          label="Ảnh"
-          name="image"
-          rules={[{ required: true, message: "Không được bỏ trống!" }]}
-        >
-          <UploadFile />
-        </Form.Item>
         <div>
           <Button htmlType="submit" className="w-full" size="large">
             Tạo

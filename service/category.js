@@ -1,9 +1,9 @@
 import request from ".";
 
 export async function getAllCategory(params) {
-  return request(`/category/all`, {
+  return request(`/category`, {
     method: "GET",
-    params
+    params,
   });
 }
 export async function getCategoryById(id) {
@@ -12,19 +12,20 @@ export async function getCategoryById(id) {
   });
 }
 export async function createCategory(data) {
-  return request(`/category/create`, {
+  return request(`/category`, {
     method: "POST",
     data,
   });
 }
 export async function updateCategory(id, data) {
-  return request(`/category/update/${id}`, {
-    method: "POST",
+  return request(`/category/${id}`, {
+    method: "PATCH",
     data,
   });
 }
-export async function deleteCategory(id) {
-  return request(`/category/delete/${id}`, {
+export async function deleteCategory(id, active) {
+  return request(`/category/${id}`, {
     method: "DELETE",
+    data: { active },
   });
 }

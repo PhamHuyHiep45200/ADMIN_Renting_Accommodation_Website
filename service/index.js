@@ -1,7 +1,8 @@
 import axios from "axios";
 import moment from "moment";
+import { refreshTokenApi } from "./auth";
 const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_URL_LOCAL,
+  baseURL: process.env.NEXT_PUBLIC_URL_SERVER,
   // withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -21,7 +22,7 @@ instance.interceptors.request.use(
           accessToken = data.accessToken
           localStorage.setItem('token_admin', data.accessToken)
           localStorage.setItem('refresh_token_admin', data.refreshToken)
-          localStorage.setItem('expires_time', moment().add(data.expiresTime, 'seconds'))
+          localStorage.setItem('expires', moment().add(data.expires, 'seconds'))
         } catch (error) {
           window.location.assign("/");
           localStorage.removeItem("token_admin");
@@ -55,3 +56,4 @@ const request = (url, options) => {
   return instance.request({ ...options, url: url });
 };
 export default request;
+
