@@ -1,28 +1,6 @@
+import { Col, Divider, Row, Statistic } from "antd";
+import React, { useEffect, useState } from "react";
 import {
-  STATUS_CANCEL,
-  STATUS_DELIVERING,
-  STATUS_ORDERED,
-  STATUS_PAYMENT_SUCCESS,
-  STATUS_SUCCESS,
-} from "@/enum/order.enum";
-
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Form,
-  Image,
-  Row,
-  Select,
-  Space,
-  Statistic,
-  Table,
-} from "antd";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -35,51 +13,11 @@ import {
   YAxis,
 } from "recharts";
 
-import dayjs from "dayjs";
-import { formatMoney } from "@/utils/common";
 import { statistic } from "@/service/statistic";
 import { OrderedListOutlined, UserOutlined } from "@ant-design/icons";
-
-const { RangePicker } = DatePicker;
+import CountUp from 'react-countup';
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-const optionsDate = [
-  {
-    label: "Ngày",
-    value: "day",
-  },
-  {
-    label: "Tháng",
-    value: "mounth",
-  },
-  {
-    label: "Năm",
-    value: "year",
-  },
-];
-
-const optionsOrder = [
-  {
-    value: STATUS_ORDERED,
-    label: "Đặt hàng Chưa thanh toán",
-  },
-  {
-    value: STATUS_DELIVERING,
-    label: "Đang giao",
-  },
-  {
-    value: STATUS_PAYMENT_SUCCESS,
-    label: "Thanh toán thành công",
-  },
-  {
-    value: STATUS_SUCCESS,
-    label: "Giao hàng thành công",
-  },
-  {
-    value: STATUS_CANCEL,
-    label: "Huỷ",
-  },
-];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -88,8 +26,6 @@ const renderCustomizedLabel = ({
   midAngle,
   innerRadius,
   outerRadius,
-  percent,
-  index,
   value,
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -146,12 +82,10 @@ const data = [
   },
 ];
 export default function Home() {
-  const [form] = Form.useForm();
-  const [formFilterProduct] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState();
   const [orderFilter, setOrderFilter] = useState();
-  const [product, setProduct] = useState();
+  const [houseLocation, setHouseLocation] = useState();
   const [category, setCategory] = useState(0);
   const [user, setUser] = useState(0);
 
@@ -196,8 +130,23 @@ export default function Home() {
           quantity: data?.housePair,
         },
       ];
+      const dataHouseLocation = [
+        {
+          name: "Hà Nội",
+          quantity: data?.houseHN,
+        },
+        {
+          name: "Đà Nẵng",
+          quantity: data?.houseDN,
+        },
+        {
+          name: "Hồ Chí Minh",
+          quantity: data?.houseHCM,
+        },
+      ];
       setOrder(dataFormat);
       setOrderFilter(dataHouse);
+      setHouseLocation(dataHouseLocation);
     } catch (error) {
       console.log(error);
     } finally {
@@ -214,17 +163,19 @@ export default function Home() {
             <Statistic
               title="Người Dùng"
               value={user}
+              formatter={(value)=><CountUp end={value} duration={2} />}
               prefix={<UserOutlined />}
             />
             <Statistic
               title="Thể Loại"
               value={category}
+              formatter={(value)=><CountUp end={value} duration={2} />}
               prefix={<OrderedListOutlined />}
             />
           </div>
           <Divider />
           <Row className="flex items-end justify-around w-full">
-            <Col className="flex flex-col justify-start">
+            <Col className="flex flex-col justify-start" span={12}>
               <div className="text-center font-bold text-[22px] mb-5">
                 Thống kê đăng nhà trọ{" "}
               </div>
@@ -267,6 +218,19 @@ export default function Home() {
                     })}
                 </div>
               </div>
+            </Col>
+            <Col span={12}>
+              <div className="text-center font-bold text-[22px] mb-20">
+                Thống kê khu vực nhà trọ{" "}
+              </div>
+              <BarChart width={500} height={350} data={houseLocation}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="quantity" fill="#FF8042" />
+              </BarChart>
             </Col>
           </Row>
           <Divider />
