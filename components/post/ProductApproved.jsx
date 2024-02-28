@@ -17,7 +17,7 @@ function ProductApproved({ checkCall, resetData }) {
     try {
       await updateMultiProduct({
         status,
-        products: selectedRowKeys,
+        listId: selectedRowKeys,
       });
       getAllCartProductAproved();
       resetData()
@@ -47,7 +47,6 @@ function ProductApproved({ checkCall, resetData }) {
   useEffect(() => {
     getAllCartProductAproved();
   }, [checkCall]);
-  console.log(data);
   const columns = useMemo(() => {
     return [
       {

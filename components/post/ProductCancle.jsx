@@ -7,31 +7,21 @@ import { PRODUCT_STATUS } from "@/enum/product.enum";
 
 function ProductCancle({checkCall}) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    total: 0,
-    limit: 10,
-  });
+  const [product, setProduct] = useState([]);
 
   const getAllProductCancle = async () => {
     setLoading(true);
     try {
       const { data } = await getAllProduct({
-        status: "REJECT",
-        page: pagination.page,
-        limit: pagination.limit,
+        status: "REJECT"
       });
-      setData(
-        data.map((e) => ({
-          ...e,
-          key: e._id,
-        }))
-      );
-      setPagination({
-        ...pagination,
-        total: products.total,
-      });
+      const product = data?.data?.map((e) => ({
+        ...e,
+        key: e?._id,
+      }))
+      if(product.length) {
+        setProduct(product)
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -48,7 +38,7 @@ function ProductCancle({checkCall}) {
         render: (_, record) => (
           <div className="flex items-center space-x-4">
             <Image
-              src={record.imgs[0]}
+              src={record?.imgs?.[0]}
               alt=""
               className="max-w-[100px] min-w-[100px] min-h-[100px] max-h-[100px] rounded-[6px]"
             />
@@ -63,18 +53,18 @@ function ProductCancle({checkCall}) {
       },
       {
         title: "Category",
-        render: (_, record) => <span>{record.category}</span>,
+        render: (_, record) => <span>{record?.category?.name}</span>,
       },
       {
         title: "type",
         align: "center",
-        render: (_, record) => <span>{record.type} đ</span>,
+        render: (_, record) => <span>{record?.type} đ</span>,
       },
       {
         title: "Money",
         render: (_, record) => (
           <span className="text-[red] font-semibold">
-            {formatMoney(record.money)} đ
+            {formatMoney(record?.money)} đ
           </span>
         ),
       },
@@ -82,7 +72,7 @@ function ProductCancle({checkCall}) {
   }, []);
   return (
     <div>
-      <Table columns={columns} dataSource={data} loading={loading} />
+      <Table columns={columns} dataSource={product} loading={loading} />
     </div>
   );
 }

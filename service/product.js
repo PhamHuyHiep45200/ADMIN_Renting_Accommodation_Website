@@ -31,8 +31,8 @@ export async function updateProduct(id, data) {
   });
 }
 export async function updateMultiProduct(data) {
-  return request(`/house/change-status/`, {
-    method: "POST",
+  return request(`/house/status`, {
+    method: "PUT",
     data,
   });
 }
