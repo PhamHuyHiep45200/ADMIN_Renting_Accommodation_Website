@@ -13,6 +13,10 @@ function ProductPending({ checkCall, resetData }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+  });
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -41,6 +45,7 @@ function ProductPending({ checkCall, resetData }) {
     try {
       const { data } = await getAllProduct({
         status: "PENDING",
+        page: pagination.page,
       });
       const product = [
         ...data.data.map((e) => ({
@@ -48,6 +53,10 @@ function ProductPending({ checkCall, resetData }) {
           key: e._id,
         })),
       ];
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
       setData([...product]);
     } catch (error) {
       console.log(error);
@@ -57,7 +66,7 @@ function ProductPending({ checkCall, resetData }) {
   };
   useEffect(() => {
     getAllProductPendding();
-  }, [checkCall]);
+  }, [checkCall, pagination.page]);
   const columns = useMemo(() => {
     return [
       {
@@ -97,6 +106,12 @@ function ProductPending({ checkCall, resetData }) {
       },
     ];
   }, [data]);
+  const changePage = (page) => {
+    setPagination({
+      ...pagination,
+      page,
+    });
+  };
   return (
     <div>
       <div className="flex justify-end space-x-4 items-center mb-5">
@@ -116,7 +131,17 @@ function ProductPending({ checkCall, resetData }) {
         columns={columns}
         dataSource={data}
         loading={loading}
+        pagination={false}
       />
+      {!!data.length && (
+        <div className="flex justify-center mt-5">
+          <Pagination
+            current={pagination.page}
+            total={pagination.total}
+            onChange={changePage}
+          />
+        </div>
+      )}
     </div>
   );
 }

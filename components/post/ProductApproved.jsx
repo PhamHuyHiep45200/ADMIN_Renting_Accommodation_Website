@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { getAllProduct, updateMultiProduct } from "@/service/product";
 import { formatMoney } from "@/utils/common";
-import { Button, Image, Table } from "antd";
+import { Button, Image, Pagination, Table } from "antd";
 import { PRODUCT_STATUS } from "@/enum/product.enum";
 
 function ProductApproved({ checkCall, resetData }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+  });
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -20,7 +24,7 @@ function ProductApproved({ checkCall, resetData }) {
         listId: selectedRowKeys,
       });
       getAllCartProductAproved();
-      resetData()
+      resetData();
     } catch (error) {
       console.log(error);
     }
@@ -30,7 +34,8 @@ function ProductApproved({ checkCall, resetData }) {
     setLoading(true);
     try {
       const { data } = await getAllProduct({
-        status: 'ACCEPT',
+        status: "ACCEPT",
+        page: pagination.page,
       });
       setData(
         data.data.map((e) => ({
@@ -38,6 +43,10 @@ function ProductApproved({ checkCall, resetData }) {
           key: e._id,
         }))
       );
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,7 +55,7 @@ function ProductApproved({ checkCall, resetData }) {
   };
   useEffect(() => {
     getAllCartProductAproved();
-  }, [checkCall]);
+  }, [checkCall, pagination.page]);
   const columns = useMemo(() => {
     return [
       {
@@ -92,6 +101,13 @@ function ProductApproved({ checkCall, resetData }) {
     onChange: onSelectChange,
   };
 
+  const changePage = (page) => {
+    setPagination({
+      ...pagination,
+      page,
+    });
+  };
+
   return (
     <div>
       <div className="flex justify-end mb-5">
@@ -107,7 +123,17 @@ function ProductApproved({ checkCall, resetData }) {
         dataSource={data}
         loading={loading}
         rowSelection={rowSelection}
+        pagination={false}
       />
+      {!!data.length && (
+        <div className="flex justify-center mt-5">
+          <Pagination
+            current={pagination.page}
+            total={pagination.total}
+            onChange={changePage}
+          />
+        </div>
+      )}
     </div>
   );
 }

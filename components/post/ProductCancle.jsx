@@ -5,22 +5,31 @@ import { Button, Image, Pagination, Table } from "antd";
 import { useRouter } from "next/router";
 import { PRODUCT_STATUS } from "@/enum/product.enum";
 
-function ProductCancle({checkCall}) {
+function ProductCancle({ checkCall }) {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+  });
 
   const getAllProductCancle = async () => {
     setLoading(true);
     try {
       const { data } = await getAllProduct({
-        status: "REJECT"
+        status: "REJECT",
+        page: pagination.page,
       });
       const product = data?.data?.map((e) => ({
         ...e,
         key: e?._id,
-      }))
-      if(product.length) {
-        setProduct(product)
+      }));
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
+      if (product.length) {
+        setProduct(product);
       }
     } catch (error) {
       console.log(error);
@@ -30,7 +39,7 @@ function ProductCancle({checkCall}) {
   };
   useEffect(() => {
     getAllProductCancle();
-  }, [checkCall]);
+  }, [checkCall, pagination.page]);
   const columns = useMemo(() => {
     return [
       {
@@ -70,9 +79,29 @@ function ProductCancle({checkCall}) {
       },
     ];
   }, []);
+  const changePage = (page) => {
+    setPagination({
+      ...pagination,
+      page,
+    });
+  };
   return (
     <div>
-      <Table columns={columns} dataSource={product} loading={loading} />
+      <Table
+        columns={columns}
+        pagination={false}
+        dataSource={product}
+        loading={loading}
+      />
+      {!!product.length && (
+        <div className="flex justify-center mt-5">
+          <Pagination
+            current={pagination.page}
+            total={pagination.total}
+            onChange={changePage}
+          />
+        </div>
+      )}
     </div>
   );
 }
