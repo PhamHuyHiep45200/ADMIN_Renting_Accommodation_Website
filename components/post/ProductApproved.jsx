@@ -59,7 +59,7 @@ function ProductApproved({ checkCall, resetData }) {
   const columns = useMemo(() => {
     return [
       {
-        title: "House",
+        title: "Nhà Trọ",
         render: (_, record) => (
           <div className="flex items-center space-x-4">
             <Image
@@ -77,16 +77,16 @@ function ProductApproved({ checkCall, resetData }) {
         ),
       },
       {
-        title: "Category",
+        title: "Thể Loại",
         render: (_, record) => <span>{record.category.name}</span>,
       },
       {
-        title: "type",
+        title: "Kiểu Bài Đăng",
         align: "center",
         render: (_, record) => <span>{record.type}</span>,
       },
       {
-        title: "Money",
+        title: "Giá",
         render: (_, record) => (
           <span className="text-[red] font-semibold">
             {formatMoney(record.money)} đ

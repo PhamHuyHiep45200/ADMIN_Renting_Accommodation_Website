@@ -17,17 +17,17 @@ function Product() {
   const items = [
     {
       key: "1",
-      label: <Tag color="green">Accept Post</Tag>,
+      label: <Tag color="green">Bài Đăng Đã Duyệt</Tag>,
       children: <ProductApproved checkCall={checkCall} resetData={resetData} />,
     },
     {
       key: "2",
-      label: <Tag color="blue">Pendding Post</Tag>,
+      label: <Tag color="blue">Bài Đăng Đợi Duyệt</Tag>,
       children: <ProductApprove checkCall={checkCall} resetData={resetData} />,
     },
     {
       key: "3",
-      label: <Tag color="red">Reject Post</Tag>,
+      label: <Tag color="red">Bài Đăng Đã Hủy</Tag>,
       children: <ProductCancle checkCall={checkCall} />,
     },
   ];

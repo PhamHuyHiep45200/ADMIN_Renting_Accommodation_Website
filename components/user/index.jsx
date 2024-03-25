@@ -12,6 +12,10 @@ function Users() {
   const [dataUpdate, setDataUpdate] = useState(null);
   const [add, setAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+  });
 
   const columns = [
     {
@@ -20,7 +24,7 @@ function Users() {
       key: "username",
     },
     {
-      title: "Phone",
+      title: "Số Điện Thoại",
       dataIndex: "phone",
       key: "phone",
     },
@@ -74,11 +78,13 @@ function Users() {
   ];
   useEffect(() => {
     getAll();
-  }, []);
+  }, [pagination.page]);
   const getAll = async () => {
     setLoading(true);
     try {
-      const { data } = await getAllUser();
+      const { data } = await getAllUser({
+        page: pagination.page,
+      });
       setData(data.data);
     } catch (error) {
       console.log(error);
@@ -98,6 +104,12 @@ function Users() {
       console.log(error);
     }
   };
+  const changePage = (page) => {
+    setPagination({
+      ...pagination,
+      page,
+    });
+  };
   return (
     <div>
       <div className="text-center text-[30px] font-bold text-[#333]">
@@ -116,6 +128,15 @@ function Users() {
         data={dataUpdate}
       />
       <Table columns={columns} dataSource={data} loading={loading} />
+      {!!data.length && (
+        <div className="flex justify-center mt-5">
+          <Pagination
+            current={pagination.page}
+            total={pagination.total}
+            onChange={changePage}
+          />
+        </div>
+      )}
     </div>
   );
 }
