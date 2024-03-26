@@ -34,7 +34,7 @@ function Product() {
   return (
     <div>
       <div className="text-center text-[30px] font-bold text-[#333]">
-        Quản Lý Sản Phẩm
+        Quản Lý Bài Đăng
       </div>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
     </div>
