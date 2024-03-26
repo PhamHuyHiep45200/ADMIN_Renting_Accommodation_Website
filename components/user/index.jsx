@@ -55,21 +55,21 @@ function Users() {
             }}
           >
             <HighlightOutlined className="text-[green]" />
-            <span className="text-[green]">Update</span>
+            <span className="text-[green]">Chỉnh Sửa</span>
           </div>
           {!e.active ? (
             <div
               className="px-[10px] py-[5px] rounded-xl bg-[#ffae00] border-[#ffae00] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
               onClick={() => handleDelete(e._id, true)}
             >
-              <span className="text-[#ffae00]">Public</span>
+              <span className="text-[#ffae00]">Công Khai</span>
             </div>
           ) : (
             <div
               className="px-[10px] py-[5px] rounded-xl bg-[red] border-[red] border-[1px] bg-opacity-25 space-x-[5px] text-[white] flex items-center cursor-pointer font-medium"
               onClick={() => handleDelete(e._id, false)}
             >
-              <span className="text-[red]">Private</span>
+              <span className="text-[red]">Khóa</span>
             </div>
           )}
         </div>
