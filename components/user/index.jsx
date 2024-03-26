@@ -86,6 +86,10 @@ function Users() {
         page: pagination.page,
       });
       setData(data.data);
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -127,8 +131,13 @@ function Users() {
         closeAdd={closeAdd}
         data={dataUpdate}
       />
-      <Table columns={columns} dataSource={data} loading={loading} />
-      {!!data.length && (
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        loading={loading}
+      />
+      {!!data && data.length && (
         <div className="flex justify-center mt-5">
           <Pagination
             current={pagination.page}
